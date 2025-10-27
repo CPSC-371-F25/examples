@@ -1,0 +1,30 @@
+{
+    "toronto": {
+        "title": "Toronto",
+        "startDate": "2025-10-18",
+        "endDate": "2025-10-19",
+        "description": "Went to Toronto to see GoGo Penguin, a Jazz trio.",
+        "photoUrl": "/toronto.jpg"
+    },
+    "canadice": {
+        "title": "Canadice Lake",
+        "startDate": "2025-10-04",
+        "endDate": "2025-10-04",
+        "description": "Went canoeing at Canadice Lake.",
+        "photoUrl": "/canadice.jpg"
+    },
+    "northshore": {
+        "title": "Minnesota North Shore",
+        "startDate": "2025-01-01",
+        "endDate": "2025-01-04",
+        "description": "Went to the North Shore of Lake Superior in Minnesota.",
+        "photoUrl": "/northshore.jpg"
+    },
+    "milwaukee": {
+        "title": "Milwaukee",
+        "startDate": "2024-12-10",
+        "endDate": "2025-12-14",
+        "description": "Went to Milwaukee, Wisconsin.",
+        "photoUrl": "/milwaukee.jpg"
+    }
+}
