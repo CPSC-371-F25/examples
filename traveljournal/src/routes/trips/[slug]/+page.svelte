@@ -1,20 +1,25 @@
 <script lang="ts">
     import travels from "$lib/assets/travels.json";
+    // Let typescript know it's ok to access keys by string
+    type TravelKey = keyof typeof travels;
     import { asset } from '$app/paths';
     import type { PageProps } from "./$types";
 
     // Import data from +page.ts, which parses the URL including the [slug] part and gives
     let { data }: PageProps = $props();
+
+    // Let typescript know it's ok to access keys by string
+    let tripID = data.tripID as TravelKey;
 </script>
 
 <main>
-    <h1> {travels[data.tripID].title} </h1>
+    <h1> {travels[tripID].title} </h1>
 
-    <p> {travels[data.tripID].startDate} </p>
+    <p> {travels[tripID].startDate} </p>
 
-    <img src={asset(travels[data.tripID].photoUrl)} alt="">
+    <img src={asset(travels[tripID].photoUrl)} alt="">
 
-    <p> {travels[data.tripID].description} </p>
+    <p> {travels[tripID].description} </p>
 
 </main>
 
