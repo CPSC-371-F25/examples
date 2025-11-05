@@ -3,7 +3,7 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -14,5 +14,6 @@ datasource db {
 model Flavors {
   id    Int     @id @default(autoincrement())
   name  String
-  price Float
+  price Float   // USD
+  quantity  Int // Quanity remaining (in gallons)
 }
