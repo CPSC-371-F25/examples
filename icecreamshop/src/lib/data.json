@@ -1,0 +1,26 @@
+{
+  "flavors": [
+    { "name": "Vanilla Bean", "price": 3.50, "quantity": 4 },
+    { "name": "Chocolate Fudge", "price": 3.75, "quantity": 2 },
+    { "name": "Strawberry Swirl", "price": 3.60, "quantity": 5 },
+    { "name": "Mint Chocolate Chip", "price": 3.80, "quantity": 3 },
+    { "name": "Cookies and Cream", "price": 3.90, "quantity": 1 },
+    { "name": "Salted Caramel", "price": 4.00, "quantity": 0 },
+    { "name": "Pistachio", "price": 4.25, "quantity": 2 },
+    { "name": "Rocky Road", "price": 4.10, "quantity": 5 },
+    { "name": "Butter Pecan", "price": 4.00, "quantity": 3 },
+    { "name": "Mango Sorbet", "price": 3.70, "quantity": 4 }
+  ],
+  "orders": [
+    { "flavorid": 2, "baseid": 1, "scoops": 2, "customerName": "Ari" },
+    { "flavorid": 3, "baseid": 2, "scoops": 1, "customerName": "Bob" },
+    { "flavorid": 5, "baseid": 3, "scoops": 3, "customerName": "Charlie" },
+    { "flavorid": 2, "baseid": 1, "scoops": 2, "customerName": "Diego" },
+    { "flavorid": 4, "baseid": 3, "scoops": 1, "customerName": "Fiona" },
+    { "flavorid": 6, "baseid": 2, "scoops": 2, "customerName": "Geoff" },
+    { "flavorid": 7, "baseid": 3, "scoops": 3, "customerName": "Heidi" },
+    { "flavorid": 8, "baseid": 1, "scoops": 1, "customerName": "Jan" },
+    { "flavorid": 9, "baseid": 3, "scoops": 2, "customerName": "Kim" },
+    { "flavorid": 10, "baseid": 2, "scoops": 1, "customerName": "Leo" }
+  ]
+}

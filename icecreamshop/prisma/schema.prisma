@@ -1,0 +1,38 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Flavor {
+  id       Int     @id @default(autoincrement())
+  name     String
+  price    Float    // USD
+  quantity Int      // Quanity remaining (in gallons)
+  order    Order[]  // relation field
+}
+
+// TODO: in class
+model Base {
+  id       Int     @id @default(autoincrement())
+  name     String
+  order    Order[]  // relation field
+}
+
+model Order {
+  id       Int    @id @default(autoincrement())
+  flavor   Flavor @relation(fields: [flavorId], references: [id])
+  flavorId Int
+  // TODO: uncomment
+  base   Base @relation(fields: [baseId], references: [id])
+  baseId   Int
+  scoops   Int
+  customerName  String
+}
