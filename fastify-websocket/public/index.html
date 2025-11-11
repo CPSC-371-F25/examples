@@ -4,17 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WebSocket Hello</title>
+
+    <style>
+        pre#received-text {
+            border: 1px solid black;
+            height: 10em;
+            overflow: scroll;
+        }
+    </style>
 </head>
 <body>
     <div>
-        <h2>WebSocket messenger</h2>        
+        <h2>Connection details</h2>
+        <div>
+            <label>Server address:
+                <input type="text" name="server-address" id="server-address" value="ws://172.21.3.231:3000/connect">
+            </label>
+            <label>Your name:
+                <input type="text" name="your-name" id="your-name" placeholder="Enter your name...">
+            </label>
+
+            <button id="connect-button">Connect</button>
+        </div>
+
+        <h2>WebSocket messenger</h2>
 
         <div>
             <label>Send text:
-                <input type="text" name="send-text" id="send-text">
+                <input type="text" name="send-text" id="send-text" placeholder="Start typing...">
             </label>
 
-            <button id="send-button">Send!</button>
+            <button id="send-button">Send message</button>
         </div>
 
         <h3>Received Text:</h3>
@@ -22,31 +42,79 @@
     </div>
 
     <script>
+        // UI elements from HTML
         const sendTextEl = document.getElementById('send-text');
-        const sendButtonEl = document.getElementById('send-button');
         const receivedTextEl = document.getElementById('received-text');
+        const sendButtonEl = document.getElementById('send-button');
+        const connectButtonEl = document.getElementById('connect-button');
+        const serverAddressEl = document.getElementById('server-address');
+        const yourNameEl = document.getElementById('your-name');
 
-        function sendMessage() {
-            ws.send(sendTextEl.value);
-            sendTextEl.value = '';
+        // helper functions
+        // Message schema:
+        // {
+        //      "type": "message" | "coord",
+        //      "name": "your name",
+        //      "data": "some message" | [x, y] coord,
+        // }
+        function sendMessage(msg) {
+            if (!ws) {
+                alert('Please connect to websocket server first');
+                return;
+            }
+            let msgObj = {
+                type: 'message',
+                name: 'Default',
+                data: msg,
+            };
+            ws.send(JSON.stringify(msgObj));
         }
 
-        // connect to server's web socket server (route is /connect)
-        const ws = new WebSocket(`ws://${window.location.host}/connect`);
+        function logMessage(msg) {
+            receivedTextEl.innerHTML += msg + '\n';
+        }
 
-        ws.onopen = () => console.log('WebSocket opened!');
-        ws.onclose = () => console.log('WebSocket closed!');
+        // enable connect button UI
+        connectButtonEl.addEventListener('click', connect);
 
-        // add any new messages from server to HTML element
-        ws.onmessage = (msg) => receivedTextEl.innerHTML += msg.data + '\n';
-
-        // send messages to server
-        sendButtonEl.addEventListener('click', sendMessage);
-        sendTextEl.addEventListener('keypress', (evt) => {
-            if (evt.key == 'Enter') {
-                sendMessage();
-            }
+        // enable UI to send messages to server
+        sendButtonEl.addEventListener('click', () => {
+            sendMessage(sendTextEl.value);
+            sendTextEl.value = '';
         });
+
+
+        // will hold the WebSocket, once connected
+        let ws = null;
+
+        function connect() {
+            // connect to server's web socket server (route is /connect)
+            ws = new WebSocket(serverAddressEl.value);
+
+            // Handle open/close
+            ws.onopen = () => logMessage('WebSocket opened!')
+            ws.onclose = () => logMessage('WebSocket closed!');
+
+            // Handle incoming messages from server
+            // yeah this would be tons better with typescript but in the
+            // interest of simplicity here we are..
+            // Message schema:
+            // {
+            //      "type": "message" | "coord",
+            //      "name": "your name",
+            //      "data": "some message" | [x, y] coord,
+            // }
+            ws.onmessage = (msg) => {
+                let msgObj = JSON.parse(msg.data);
+                let msgType = msgObj.type;
+                if (msgType == 'message') {
+                    logMessage(msg.data);
+                } else if (msgType == 'coord') {
+                    // TODO
+                }
+            }
+        }
+
     </script>
 </body>
 </html>
