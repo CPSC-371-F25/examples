@@ -27,6 +27,20 @@
 
         <button type="submit">Send</button>
     </form>
+
+
+    <h2>Write file</h2>
+    <form action="/writefile", method="post">
+        <label>Filename:
+            <input type="text" name="name" value="somefile.txt" required>
+        </label><br>
+
+        <label>Content:
+            <textarea name="content" rows="5" required>Content to go in file...</textarea>
+        </label>
+
+        <button type="submit">Submit file to server</button>
+    </form>
 </body>
 
 </html>
