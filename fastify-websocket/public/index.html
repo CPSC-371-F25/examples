@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Hello</title>
+</head>
+<body>
+    <div>
+        <h2>WebSocket messenger</h2>        
+
+        <div>
+            <label>Send text:
+                <input type="text" name="send-text" id="send-text">
+            </label>
+
+            <button id="send-button">Send!</button>
+        </div>
+
+        <h3>Received Text:</h3>
+        <pre id="received-text"></pre>
+    </div>
+
+    <script>
+        const sendTextEl = document.getElementById('send-text');
+        const sendButtonEl = document.getElementById('send-button');
+        const receivedTextEl = document.getElementById('received-text');
+
+        function sendMessage() {
+            ws.send(sendTextEl.value);
+            sendTextEl.value = '';
+        }
+
+        // connect to server's web socket server (route is /connect)
+        const ws = new WebSocket(`ws://${window.location.host}/connect`);
+
+        ws.onopen = () => console.log('WebSocket opened!');
+        ws.onclose = () => console.log('WebSocket closed!');
+
+        // add any new messages from server to HTML element
+        ws.onmessage = (msg) => receivedTextEl.innerHTML += msg.data + '\n';
+
+        // send messages to server
+        sendButtonEl.addEventListener('click', sendMessage);
+        sendTextEl.addEventListener('keypress', (evt) => {
+            if (evt.key == 'Enter') {
+                sendMessage();
+            }
+        });
+    </script>
+</body>
+</html>
