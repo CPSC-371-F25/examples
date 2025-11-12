@@ -35,33 +35,6 @@ const submissions = [
     }
 ];
 
-// Write to "file database"
-fastify.post('/writefile', async (request, reply) => {
-    const { name, content } = request.body;
-
-    try {
-        // in production this is probably not a good idea (gives end users access to your file system)
-        const filePath = path.join(__dirname, 'public', name);
-        fs.writeFileSync(filePath, content);
-        // probably also don't want to share full filepath with the end user...
-        reply.send(`Successfully wrote file ${filePath}`)
-    } catch (err) {
-        reply.code(500).send(err);
-    }
-});
-
-// usually would just use a static file server for this purpose
-// but demonstrates that this could be done
-fastify.get('/readfile/:name', async (request, reply) => {
-    const { name } = request.params;
-
-    try {
-        const text = fs.readFileSync(path.join(__dirname, 'public', name));
-        reply.send(text);
-    } catch (err) {
-        reply.code(500).send(err);
-    }
-});
 
 
 // GET /submissions/:id
