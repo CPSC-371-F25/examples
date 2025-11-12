@@ -50,6 +50,8 @@
         const serverAddressEl = document.getElementById('server-address');
         const yourNameEl = document.getElementById('your-name');
 
+        // browser state:
+
         // helper functions
         // Message schema:
         // {
@@ -111,6 +113,7 @@
                     logMessage(msg.data);
                 } else if (msgType == 'coord') {
                     // TODO
+                    alert(msg.data);
                 }
             }
         }

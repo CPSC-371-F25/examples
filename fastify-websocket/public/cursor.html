@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebSocket Hello</title>
+
+    <style>
+        body {
+            width: 100vw;
+            height: 100vw;
+            padding: 0;
+            margin: 0;
+        }
+        .cursor {
+            width: 2rem;
+            height: 2rem;
+            background-color: magenta;
+            border-radius: 50%;
+            position: absolute;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+    <div class="cursor"></div>
+    <div>
+        <h2>Connection details</h2>
+        <div>
+            <label>Server address:
+                <input type="text" name="server-address" id="server-address" value="ws://172.21.3.231:3000/connect">
+            </label>
+            <label>Your name:
+                <input type="text" name="your-name" id="your-name" placeholder="Enter your name...">
+            </label>
+
+            <button id="connect-button">Connect</button>
+        </div>
+
+    </div>
+
+    <script>
+        // UI elements from HTML
+        const connectButtonEl = document.getElementById('connect-button');
+        const serverAddressEl = document.getElementById('server-address');
+        const yourNameEl = document.getElementById('your-name');
+        const cursorTemplate = document.querySelector('.cursor');
+
+        // enable connect button UI
+        connectButtonEl.addEventListener('click', connect);
+
+        // browser state:
+        const connectedCursors = [];
+
+        // helper functions
+        // Message schema:
+        // {
+        //      "type": "message" | "coord",
+        //      "name": "your name",
+        //      "data": "some message" | [x, y] coord,
+        // }
+        function sendCoord(x, y) {
+            if (!ws) {
+                alert('Please connect to websocket server first');
+                return;
+            }
+            let msgObj = {
+                type: 'coord',
+                name: yourNameEl.value,
+                data: [x, y],
+            };
+            ws.send(JSON.stringify(msgObj));
+        }
+
+        // Create new cursor element
+        function createCursor(name) {
+            let cursorNode = document.createElement('div');
+            cursorNode.innerHTML = name;
+            cursorNode.classList = cursorTemplate.classList;
+            cursorNode.id = 'cursor-' + name;
+            cursorNode.style.visibility = 'visible';
+            cursorNode.style.backgroundColor = `rgb(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255})`;
+            document.body.appendChild(cursorNode);
+            connectedCursors.push(cursorNode);
+            return cursorNode;
+        }
+
+        // will hold the WebSocket, once connected
+        let ws = null;
+
+        function connect() {
+            // connect to server's web socket server (route is /connect)
+            ws = new WebSocket(serverAddressEl.value);
+
+            // Handle open/close
+            ws.onopen = () => {
+                console.log('WebSocket opened!');
+                // Add a cursor for self
+                let selfCursor = createCursor(yourNameEl.value);
+                document.body.addEventListener('mousemove', (evt) => {
+                    selfCursor.style.left = `calc(${evt.pageX}px - 1rem)`;
+                    selfCursor.style.top = `calc(${evt.pageY}px - 1rem)`;
+                    let xPercent = evt.pageX / document.body.clientWidth;
+                    let yPercent = evt.pageY / document.body.clientHeight;
+                    sendCoord(xPercent, yPercent);
+                });
+            };
+            ws.onclose = () => console.log('WebSocket closed!');
+
+            // Handle incoming messages from server
+            // yeah this would be tons better with typescript but in the
+            // interest of simplicity here we are..
+            // Message schema:
+            // {
+            //      "type": "message" | "coord",
+            //      "name": "your name",
+            //      "data": "some message" | [x, y] coord,
+            // }
+            ws.onmessage = (msg) => {
+                let msgObj = JSON.parse(msg.data);
+                let msgType = msgObj.type;
+                if (msgType == 'message') {
+                } else if (msgType == 'coord') {
+                    // skip if its ours
+                    if (msgObj.name == yourNameEl.value) {
+                        return;
+                    }
+
+                    // see if their name exists in client cursors, create if not
+                    let foundCursor = connectedCursors.find((c) => c.id.includes(msgObj.name))
+                    if (!foundCursor) {
+                        foundCursor = createCursor(msgObj.name);
+                    }
+
+                    // update cursor location (percentage)
+                    foundCursor.style.left = `${(msgObj.data[0] * 100).toFixed(1)}%`;
+                    foundCursor.style.top = `${(msgObj.data[1] * 100).toFixed(1)}%`;
+                }
+            }
+        }
+
+    </script>
+</body>
+</html>

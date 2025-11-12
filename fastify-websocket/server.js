@@ -12,7 +12,9 @@ fastify.register(require('@fastify/websocket'));
 fastify.register(async (fastify) => {
     // Define a route for websocket to communicate on
     fastify.get('/connect', { websocket: true }, (socket, request) => {
-        console.log('New WebSocket client connected!');
+        // Add to clients list
+        clients.push(socket);
+        console.log(`New WebSocket client connected! Now ${clients.length} clients connected.`);
         let initMsg = {
             type: 'message',
             name: 'Server',
@@ -41,11 +43,32 @@ fastify.register(async (fastify) => {
                 };
                 socket.send(JSON.stringify(outMsg));
             } else if (msgType == 'coord') {
-                // TODO
+                // relay coordinates to everyone
+                console.log(msgObj);
+                broadcast(JSON.stringify(msgObj));
             }
+        });
+
+        socket.on('close', () => {
+            // Remove from clients list
+            let index = clients.indexOf(socket);
+            if (index >= 0) {
+                clients.splice(index, 1);
+            }
+            console.log(`Client disconnected. Now ${clients.length} clients connected.`);
         });
     });
 });
+
+// maintain a clients list of every client that has connected
+const clients = [];
+
+// broadcast message to every client
+function broadcast(msg) {
+    for (const client of clients) {
+        client.send(msg);
+    }
+}
 
 
 async function start() {
