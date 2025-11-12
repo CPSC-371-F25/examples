@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WS Demo</title>
+</head>
+<body>
+    <script>
+        const ws = new WebSocket(`ws://${window.location.host}/connect`)
+
+        ws.onopen = () => {
+            console.log('connection open');
+            setInterval(() => {
+                ws.send('hello from client');
+            }, 500);
+        };
+        ws.onclose = () => console.log('connection closed');
+
+        ws.onmessage = (msg) => {
+            console.log(msg.data);
+        };
+
+    </script>
+</body>
+</html>

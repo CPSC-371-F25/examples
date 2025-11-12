@@ -1,10 +1,11 @@
 // Node.js has been slow to the uptake of ES6 modules, so `require()` is still
 // more common (and some fastify plugins require it, which is why we're using it
 // here).
-const fastify = require('fastify')({ logger: false });
+const fastify = require('fastify')({ logger: true });
 const path = require('node:path')
 const fs = require('node:fs');
 
+const fileStorePath = path.join(__dirname, 'public', 'submission.json');
 
 // register form handling plugin (handle application/x-www-form-urlencoded)
 fastify.register(require('@fastify/formbody'))
@@ -18,22 +19,22 @@ fastify.register(require('@fastify/static'), {
 
 // In-memory storage for submissions
 // Pre-poplulated with a couple submissions
-const submissions = [
-    {
-        "id": 1,
-        "name": "Alice Johnson",
-        "email": "alice.johnson@example.com",
-        "message": "I'm interested in learning more about your services.",
-        "timestamp": "2025-11-10T16:18:00.000Z"
-    },
-    {
-        "id": 2,
-        "name": "Brandon Lee",
-        "email": "brandon.lee@example.org",
-        "message": "Can you help me with a custom web development project?",
-        "timestamp": "2025-11-10T16:20:00.000Z"
-    }
-];
+// const submissions = [
+//     {
+//         "id": 1,
+//         "name": "Alice Johnson",
+//         "email": "alice.johnson@example.com",
+//         "message": "I'm interested in learning more about your services.",
+//         "timestamp": "2025-11-10T16:18:00.000Z"
+//     },
+//     {
+//         "id": 2,
+//         "name": "Brandon Lee",
+//         "email": "brandon.lee@example.org",
+//         "message": "Can you help me with a custom web development project?",
+//         "timestamp": "2025-11-10T16:20:00.000Z"
+//     }
+// ];
 
 
 
@@ -42,7 +43,7 @@ const submissions = [
 // TODO
 fastify.get('/submissions/:id', async (request, reply) => {
     const { id } = request.params;
-    console.log(id);
+    // console.log(id);
 
     // These would work, but find is shorter.
     // let submission = {};
@@ -61,7 +62,7 @@ fastify.get('/submissions/:id', async (request, reply) => {
     // });
 
     // submissions.filter((s) => s.id == id);
-    let submission = submissions.find((s) => s.id == id);
+    let submission = getSubmissions().find((s) => s.id == id);
 
     if (submission) {
         reply.send(submission);
@@ -71,17 +72,26 @@ fastify.get('/submissions/:id', async (request, reply) => {
     }
 });
 
+
+
+
+
 // GET /submissions - return all contact form submissions
 // TODO
 fastify.get('/submissions', async (request, reply) => {
-    reply.send(submissions);
+    reply.send(getSubmissions());
 });
+
+
+
+
 
 // POST /submit - receive contact form data
 // TODO
 fastify.post('/submit', async (request, reply) => {
     const { name, email, message } = request.body;
 
+    const submissions = getSubmissions();
     const id = submissions.length + 1;
     const timestamp = new Date();
 
@@ -91,12 +101,28 @@ fastify.post('/submit', async (request, reply) => {
 
     submissions.push(sub);
 
+    writeSubmissions(submissions);
+
     reply.send({
         success: true,
         submission: sub,
     });
 });
 
+
+
+
+function getSubmissions() {
+    const text = fs.readFileSync(fileStorePath);
+    const submissions = JSON.parse(text);
+    return submissions;
+}
+
+
+function writeSubmissions(newSubmissions) {
+    const text = JSON.stringify(newSubmissions, null, 4);
+    fs.writeFileSync(fileStorePath, text);
+}
 
 
 

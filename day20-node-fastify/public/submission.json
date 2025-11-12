@@ -1,0 +1,30 @@
+[
+    {
+        "id": 1,
+        "name": "Alice Johnson",
+        "email": "alice.johnson@example.com",
+        "message": "I'm interested in learning more about your services.",
+        "timestamp": "2025-11-10T16:18:00.000Z"
+    },
+    {
+        "id": 2,
+        "name": "Brandon Lee",
+        "email": "brandon.lee@example.org",
+        "message": "Can you help me with a custom web development project?",
+        "timestamp": "2025-11-10T16:20:00.000Z"
+    },
+    {
+        "name": "bridger",
+        "email": "bherman@hws.edu",
+        "message": "hello world!",
+        "id": 3,
+        "timestamp": "2025-11-12T18:42:29.219Z"
+    },
+    {
+        "name": "bridger",
+        "email": "bherman@hws.edu",
+        "message": "hello world!",
+        "id": 4,
+        "timestamp": "2025-11-12T18:43:33.203Z"
+    }
+]

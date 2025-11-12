@@ -8,5 +8,6 @@ export default defineConfig({
     proxy: {
       '/api': 'http://localhost:3000' // Send all /api requests to Fastify
     }
-  }
+  },
+  root: '../backend/public'
 })
