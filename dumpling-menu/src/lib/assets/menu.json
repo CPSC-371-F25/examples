@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Bao Trio",
+    "price": 8.99,
+    "image_url": "/bao-trio.avif"
+  },
+  {
+    "name": "Mapo Tofu",
+    "price": 12.50,
+    "image_url": "/mapo-tofu.avif"
+  },
+  {
+    "name": "Pork Dumpling",
+    "price": 9.75,
+    "image_url": "/pork-dumpling.avif"
+  },
+  {
+    "name": "Seaweed Salad",
+    "price": 6.25,
+    "image_url": "/seaweed-salad.avif"
+  },
+  {
+    "name": "Xiao Long Bao",
+    "price": 10.50,
+    "image_url": "/xiao-long-bao.avif"
+  }
+]
